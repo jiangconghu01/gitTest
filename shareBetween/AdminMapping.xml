@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+ <mapper namespace="com.huawei.logpro.dao.AdminDao">
+ 	<insert id="saveAdmin" parameterType="com.huawei.logpro.entity.Admin">
+		insert into t_admin (t_id,
+		t_name,
+		t_password,
+		t_token) 
+		values(#{id},#{name},#{password},#{token})
+	</insert>
+ 	<select id="findAdminByName" parameterType="String" resultType="com.huawei.logpro.entity.Admin">
+		select 
+		t_id as id,<!-- setId() -->
+		t_name as name,
+		t_password as password,
+		t_token as token,
+		t_address as address,
+		t_article as article
+		from t_admin 
+		where t_name=#{name}
+	</select>
+	<update id="updateAdmin" parameterType="map">
+		update t_admin set 
+		<trim suffixOverrides=",">
+		<if test="password!=null">
+		t_password=#{password},
+		</if>
+		<if test="name!=null">
+		t_name=#{name},
+		</if>
+		<if test="token!=null">
+		t_token=#{token}
+		</if>
+		</trim>
+		where t_id=#{id}
+	</update>
+	<update id="modMessage" parameterType="map">
+		update t_admin set 
+		<trim suffixOverrides=",">
+		<if test="address!=null">
+		t_address=#{address},
+		</if>
+		<if test="article!=null">
+		t_article=#{article},
+		</if>
+		</trim>
+		where t_id=#{id}
+	</update>
+ </mapper>
