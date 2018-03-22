@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+    .out {
+    width: 400px;
+    height: 400px;
+/*    border: 1px dashed #f00;
+    border-radius:50%;*/
+    position:relative;
+    -webkit-transform-style: preserve-3d;
+    margin:200px auto;
+    -webkit-animation:rotate 8s linear infinite;
+    /*transform: translateZ(-200px) rotateY(30deg);*/
+    transform-origin: 50% 50% -200px;
+ 
+    }
+    .out>div{
+      width: 100%;
+      height: 50%;
+      position:absolute;
+      font-size: 60px;
+      text-align:center;
+      line-height:400px;
+      color:#daa520;
+    }
+    /*div.out .up{
+        background-color: rgba(255,0,0,0.3);
+        transform-origin: top;
+        transform:rotateX(-90deg);
+    }
+     .down{
+        background-color: rgba(0,255,0,0.3);
+        transform-origin:bottom;
+        transform: rotateX(90deg);
+    }*/
+     .left{
+        background-color: rgba(255,255,0,0.3);
+        transform-origin:left;
+         transform: rotateY(90deg);
+    }
+     .right{
+        background-color: rgba(0,0,255,0.3);
+        transform-origin: right;
+        transform: rotateY(-90deg);
+    }
+     .pre{
+        background-color: rgba(0,255,255,0.3);
+        transform: translateZ(-400px);
+    }
+     .back{
+        background-color: rgba(99,66,33,0.3);
+    }
+    /*.center-1{
+      border-radius: 50%;
+      border:1px dashed #f00;
+      transform: translateZ(-200px);
+    }
+    .center-2{
+      border-radius: 50%;
+      border:1px dashed #f00;
+      transform: translateZ(-200px) rotateY(90deg);
+    }
+        .center-3{
+      border-radius: 50%;
+      border:1px dashed #f00;
+      transform: translateZ(-200px) rotateY(45deg);
+    }
+        .center-4{
+      border-radius: 50%;
+      border:1px dashed #f00;
+      transform: translateZ(-200px) rotateY(135deg);
+    }
+            .center-5{
+      border-radius: 50%;
+      border:1px dashed #f00;
+      transform: translateZ(-200px) rotateX(90deg);
+    }*/
+@-webkit-Keyframes rotate{
+  0%{
+        -webkit-transform:rotateX(0deg) rotateY(0deg);
+  }
+  100%{
+        -webkit-transform:rotateX(0deg) rotateY(360deg) ;
+  }
+}
+		</style>
+	</head>
+
+	<body>
+<div class="out">
+  <div class="up">UP</div>
+  <div class="down">DOWN</div>
+  <div class="left">LEFT</div>
+  <div class="right">RIGHT</div>
+  <div class="pre">PRE</div>
+  <div class="back">BACK</div>
+  <!--<div class="center-1"></div>
+  <div class="center-2"></div>
+  <div class="center-3"></div>
+  <div class="center-4"></div>
+  <div class="center-5"></div>-->
+</div>
+<div class="lemon"></div>
+	</body>
+	<script>
+
+	</script>
+</html>
