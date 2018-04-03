@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+    let b=1;
+    let raf=requestAnimationFrame(function re(){
+        if(b<100){
+            console.log(`${b}-----requestAnimation`);
+            b+=1;
+            raf=setTimeout(re,16)
+        }else{
+            clearTimeout(raf);
+        }
+    });
+    let a=1; 
+    let time=setTimeout(function fn(){
+
+        if(a<100){
+            console.log(`${a}-----setTimeout`);
+            a+=1;
+            time=setTimeout(fn,16)
+        }else{
+            clearTimeout(time);
+        }
+
+    },16);
+    // setInterval(function(){
+    //     let c='8888';
+    //     for(let i=0;i<10000000;i++){
+    //         c+='w';
+    //     }
+
+    // },100)
+
+    </script>
+</body>
+</html>
