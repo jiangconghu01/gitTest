@@ -1,0 +1,77 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>Document</title>
+</head>
+<body>
+    <div class="test">
+        <ul>
+            <li class="text">1</li>
+            <li class="text">1</li>
+            <li class="text">1</li>
+            <li class="text">1</li>
+            <li class="text">1</li>
+            <li class="text">1</li>
+            <li class="text">1</li>
+            <li class="text">1</li>
+        </ul>
+    </div>   
+    <script>
+    //1.函数节流，函数节流即不能在极短时间内重复多次调用或者触发，容易导致浏览器挂起或者奔溃
+    //比如屏幕分辨率，60帧已经能让人眼无法识别了，70帧就浪费了，也没事意义，所以固定时间内多次触发是没意义的
+    //简单实现：
+
+    let throttle=(function (){
+        let last=0;
+        return function(method,context,time){
+            let current=+new Date();
+            if(current-last>time){
+                method.apply(context,arguments);
+                last=current;
+            }
+
+        }
+    })();
+
+    //2.函数防抖
+    //比如弹簧，你一直按住是不会弹起的，直到你松手为止（只在最后触发一次）
+    //简单实现：
+    function debounce(method,context,time){
+        clearTimeout(method.timeoutId);
+        method.timeoutId=setTimeout(()=>{
+            method.call(context);
+        },time);
+    }
+    function test(msg){
+        console.log(999);
+    }
+    // for(let i=0;i<30000;i++){
+    //   debounce(test,this,10);
+    // }
+    for(let i=0;i<50000;i++){
+        throttle(test,this,10);
+    }
+    //3.函数柯里化
+    
+    function curry(context,fn){
+        let outParams=Array.prototype.slice(arguments,2);
+        debugger
+
+        return function(){
+            console.log()
+            let innerParams=Array.prototype.slice(arguments);
+            let finalParams=outParams.concat(innerParams);
+            return fn.apply(context,finalParams);
+        }
+    }
+    function multiplication(a,b){
+        return a*b;
+    }
+    let curryMu=curry(this,multiplication)
+    console.log(curryMu(5,6));
+    
+    
+    </script>
+</body>
+</html>
