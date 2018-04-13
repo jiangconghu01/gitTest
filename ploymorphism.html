@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+    //多态
+    let makeSound=function(animal){
+        animal&&animal.sound();
+    }
+    function Duck(){}
+    Duck.prototype.sound=function(){
+        console.log('ga ga ga');
+    }
+    function Dog(){}
+    Dog.prototype.sound=function(){
+        console.log('wang wang wang');      
+    }
+    makeSound(new Duck());
+    makeSound(new Dog());
+
+    //封装
+    //除了ES6提供的let之外，之前我们通过函数来创建作用域
+    var myObject=(function(){
+        var _name='jack';
+        return {
+            getName:function(){
+                return _name;
+            }
+        }
+    })();
+    console.log(myObject.getName());
+    console.log(myObject._name);
+    //设计模式大概分为创建模式，结构模式和行为模式
+    //创建模式中我们封装系统中不稳定和容易变化的部分，当我们想办法把系统中变化的部分封装好之后，剩下的即是稳定的可复用的部分了
+
+    //原型模式--不单是一种设计模式也被称为一种编程的泛型
+
+    //克隆的原型模式
+    var Plane=function(){
+        this.blood=100;
+        this.attackLevel=1;
+        this.defenseLevel=1;
+    }
+    var plane=new Plane();
+    plane.blood=200;
+    plane.attackLevel=2;
+    plane.defenseLevel=2;
+    var newPlane=Object.create(plane);
+    console.log(newPlane);
+    Object.create=Object.create||function(obj){
+        function f(){};
+        F.prototype=obj;
+        return new F();
+    }
+    
+    //bind方法的简单实现
+    // Function.prototype.bind =function(context){
+    //     debugger
+    //     var self=this;
+    //     return function (){
+    //         return self.apply(context,arguments);
+    //     }
+    // }
+    Function.prototype.bind=function(context,...rest){
+        var self=this;
+        return function(...inner){
+            self.apply(context,[...rest,...inner]);
+        }
+    }
+    var name='window'
+    var testBind={
+        name:'testBind'
+    }
+    var say=function (out,out2,inner,inner2){
+        console.log(`${this.name}|${out}:${out2}|${inner}:${inner2}`)
+    }.bind(testBind,44,55)
+    say(88,99);
+
+    //闭包的应用场景
+    //封装变量，避免全局变量
+    //延长变量生命周期
+
+    //高阶函数
+    //1.函数可以作为参数传递：回调函数，Array.prototype.sort之类的
+    // 2.函数可以作为返回值返回
+    // 函数柯里化
+    // 计算每月的总支出
+   /* let cost=(function(){
+
+        let args=[];
+        return function(...rest){
+            let money=0;
+            if([...rest].length===0){
+                args.forEach((val)=>{
+                    money+=val;
+                });
+               return money;
+            }else{
+                args.push(...rest);
+            }
+        }
+    })();*/
+    function currying(fn,...out){
+        let args=[...out];
+        return function(...rest){
+            if([...rest].length===0){
+                return fn.apply(this,args);
+            }else{
+                args.push(...rest);
+                //return arguments.callee;
+                //return this.caller;
+            }
+        }
+
+    }
+    let cost=(function(){
+        var money=0;
+        return function(...rest){
+            for(let i=0;i<[...rest].length;i++){
+            money+=[...rest][i]
+        }
+        return money;
+        }
+    })();
+    let cuCost=currying(cost,20,20);
+cuCost(10);
+cuCost(20,30);
+cuCost(60);
+console.log(cuCost(40));
+console.log(cuCost());
+    </script>
+</body>
+</html>
