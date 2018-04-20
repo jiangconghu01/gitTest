@@ -1,12 +1,12 @@
-//let arr = [1, 23, 35, 2, 3, 4, 5, 46, 5, 7, 6, 8, 7, 6, 7, 8, 93, 25, 4, 8, 7, 2, 3, 4, 5, 8, 0, 9,379,2,3,5,7,9,2,3,5749,2,7,3,45,8,9,7,9,4,5,82,3,4,7,844];
+let arr = [1, 23, 35, 2, 3, 4, 5, 46, 5, 7, 6, 8, 7, 6, 7, 8, 93, 25, 4, 8, 7, 2, 3, 4, 5, 8, 0, 9,379,2,3,5,7,9,2,3,5749,2,7,3,45,8,9,7,9,4,5,82,3,4,7,844];
 
-let arr=(function(){
-    let arr=[];
-    for(let i=0;i<20000;i++){
-        arr[i]=Math.floor(Math.random()*50000);
-    }
-    return arr;
-})();
+// let arr=(function(){
+//     let arr=[];
+//     for(let i=0;i<20000;i++){
+//         arr[i]=Math.floor(Math.random()*50000);
+//     }
+//     return arr;
+// })();
 //1.冒泡--交换元素位置，第一次交换完最后一个是最大值，第二次倒数第二个是第二大的值......
 function pop(arr) {
     let length=arr.length;
@@ -145,4 +145,54 @@ let arr5=Array.from(arr);
 console.time('quick')
 let copy=quick(arr5);
 console.timeEnd('quick');
+let arr6=Array.from(arr);
+
+console.time('quick2')
+let copy2=Array.prototype.sort(arr6);
+console.timeEnd('quick2');
 //console.log(copy.toString());
+
+
+function quickSort(arr){
+    let left=0,
+    right=arr.length-1;
+    function quick(arr,left,right){
+        let pos;
+        if(arr.length>1){
+            pos=getPos(arr,left,right);
+            if(left<pos-1){
+                quick(arr,left,pos-1);
+            }
+            if(pos<right){
+                quick(arr,pos,right);
+            }
+        }
+
+    }
+    function getPos(arr,left,right){
+        let midle=arr[Math.floor((left+right)/2)],//中间参照物
+        i=left,
+        j=right;
+        while(i<=j){   //左指针还未超过右指针时候继续交换两边元素
+            while(arr[i]<midle){ //在左边找到一个比参考值大的元素，只要找都循环终止arr[i]>midle------>进入下一个循环
+                i++;
+            }
+            while(arr[j]>midle){ //在右边找到一个比参考值小的元素，只要找都循环终止arr[j]<midle------>进入下个面的交换逻辑
+                j--;
+            }
+            if(i<=j){            //内部两个while改变了i,j的值，我们需要再次判断指针否已经交叉
+                [arr[i],arr[j]]=[arr[j],arr[i]];  //交换值
+            }
+        }
+        return i;
+    }
+    quick(arr,left,right);
+    return arr;
+}
+
+let arr7=Array.from(arr);
+
+console.time('quick3')
+let copy3=quickSort(arr7);
+console.timeEnd('quick3');
+console.log(copy3.toString());
