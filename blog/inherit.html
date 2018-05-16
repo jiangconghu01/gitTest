@@ -76,25 +76,24 @@
         // 此种方式可以实现继承可以保证原型回溯，同时实例继承的引用类型的属性互不影响;不过父类的构造函数调用了两次，子类的实例的构造函数变成了Super，可以做进一步优化 
 
         //4. 针对上面的组合继承父类的构造函数调用了2次的改进，可以将子类的原型直接设置为父类的原型，如下所示
-        // function Child4(name){
-        //     Super.apply(this,arguments);
-        //     this.test=44;
-        // }
-        // Child4.prototype=Super.prototype;//改进父类构造函数调用两次问题
-        // Child4.prototype.constructor=Child4;
-        // // Object.defineProperty(Child4.prototype,'constructor',{
-        // //     enumerable:false
-        // // });
-        // var child1=new Child4('bob');
-        // var child2=new Child4('bob2');
-        // console.log(child1.__proto__===Child4.prototype);               
-        // console.log(child1.__proto__.constructor,'\n',Child4.prototype.constructor); 
-        //  for(var itm in Child4.prototype){
-        //     console.log(itm);
-        // }  
+        function Child4(name){
+            Super.apply(this,arguments);
+            this.test=44;
+        }
+        Child4.prototype=Super.prototype;//改进父类构造函数调用两次问题
+        Child4.prototype.constructor=Child4;
+        var child1=new Child4('bob');
+        var child2=new Child4('bob2');
+        console.log(child1.__proto__===Child4.prototype);               
+        console.log(child1.__proto__.constructor,'\n',Child4.prototype.constructor,'\n',Super.prototype.constructor); 
+
+        console.log(Super.prototype.constructor); //这种方法改变了父类的构造函数
+         for(var itm in Child4.prototype){
+            console.log(itm);
+        }  
 
 
-        // 或者使用Object.create()创建一个过渡对象--这个稍稍麻烦一点
+        // 或者使用Object.create()创建一个过渡对象--这样子类重新定义构造函数，就能使父类和子类各有自己的构造函数
         // function Child5(name){
         //     Super.apply(this,arguments);
         //     this.test=55;
@@ -114,28 +113,28 @@
         // } 
 
         // 5.组合寄生继承模式---其实这种模式跟上面的第4-2的实现没有大的区别，不过上边的中间对象是Object.create()创建的，这里自己创建
-        function inheritProperty(sup,child){
-            function F(){};
-            F.prototype=sup.prototype;
-            var inner=new F();
-            inner.constructor=child;
-            child.prototype=inner; 
-            Object.defineProperty(child.prototype,'constructor',{
-            enumerable:false
-        });
-        }
-        function Child6(name){
-            this.age=66;
-            this.name=name;
-        }
-        inheritProperty(Super,Child6);
-        Child6.prototype.sayAge=function(){
-            return this.age;
-        }
-        var child=new Child6('end');
-        console.log(child.constructor);
-        console.log(Child6.prototype.constructor);
-        console.log(child.sayAge());
+        // function inheritProperty(sup,child){
+        //     function F(){};
+        //     F.prototype=sup.prototype;
+        //     var inner=new F();
+        //     inner.constructor=child;
+        //     child.prototype=inner; 
+        //     Object.defineProperty(child.prototype,'constructor',{
+        //     enumerable:false
+        // });
+        // }
+        // function Child6(name){
+        //     this.age=66;
+        //     this.name=name;
+        // }
+        // inheritProperty(Super,Child6);
+        // Child6.prototype.sayAge=function(){
+        //     return this.age;
+        // }
+        // var child=new Child6('end');
+        // console.log(child.constructor);
+        // console.log(Child6.prototype.constructor);
+        // console.log(child.sayAge());
                
     </script>
 </body>
