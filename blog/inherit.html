@@ -1,1 +1,142 @@
-1
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script type="text/javascript">
+    //js对面向对象的支持很弱，所以在ES6之前实现继承会绕比较多的弯（类似于对面向对象支持弱，然后强行拼凑面向对象的特性）
+        // es5中实现继承的几种方式，父类定义为Super
+        function Super(name){
+            this.name=name;
+            this.age=25;
+            this.array=[1,2,3];
+            this.obj={a:'prop'};
+            this.say=function(){
+                console.log(this.name);
+            }
+        }
+        Super.prototype.testInherit=function(){
+            console.log('I am method of super prototype')
+        }
+        // 1.构造函数继承--简单的在子类构造函数调用父类构造函数，类似就是直接把父类构造函数执行一遍，属性拷贝一份过来
+        // function Child1(name){
+        //     Super.apply(this,arguments);
+        //     this.name=name;
+        //     this.sayName=function(){
+        //         console.log(this.name);
+        //     }
+        // }
+        // var parent=new Super('lucy');
+        // var child1=new Child1('jack');
+        // var child1=new Child1('jack2');
+        // console.log(parent,child1);
+        // console.log(child1.__proto__===Child1.prototype,child1 instanceof Super);//true flase
+        // child1.array.push(4);
+        // console.log(child1.array,child2.array,s1.array,);
+        // c1.testInherit();
+        // 此种继承方式导致原型链断了，无法实现真正意义上的继承，上边这个调用会报错，因为c1并没有在Super的原型链上，导致无法调用其原型的方法;同时因为是拷贝的一份父类的属性方法所以子类改动引用类型的
+        // 熟悉并不会影响其他子类的属性
+
+
+        // 2.使用原型链继承--最基本的思想，把子类的原型设置为父类的实例
+        // function Child2(name){
+        //     this.name=name;
+        //     this.sayName=function(){
+        //         console.log(this.name);
+        //     }
+        // }
+        // var parent=new Super('lucy');
+        // Child2.prototype=parent;
+        // var child1=new Child2('jack');
+        // var child2=new Child2('jack2');
+        // child1.array.push(4);
+        // child1.obj.b="prop2";
+        // console.log(child1.array,child2.array,child1.obj,child2.obj);
+        // console.log(child1.constructor);
+        //修改一个实例继承的引用属性，可以看到其他所有实例所继承的属性都被修改了（他们引用的都是同一个地址）,并且子类实例的构造函数被修改了
+
+        //前面1和2是继承的两种基本模式，也是其他继承实现的基础
+
+        // 3.使用组合继承方式，保证实例继承属性私有化并且保证原型链不断
+        // function Child3(name){
+        //     Super.apply(this,arguments);
+        //     this.name=name;
+        // }
+        // var parent=new Super('lucy');
+        // Child3.prototype=parent;
+        // var child1=new Child3('jack');
+        // var child2=new Child3('jack2');
+        // child1.array.push(5);
+        // console.log(child1.array,child2.array);
+        // console.log(child1.constructor);
+        // 此种方式可以实现继承可以保证原型回溯，同时实例继承的引用类型的属性互不影响;不过父类的构造函数调用了两次，子类的实例的构造函数变成了Super，可以做进一步优化 
+
+        //4. 针对上面的组合继承父类的构造函数调用了2次的改进，可以将子类的原型直接设置为父类的原型，如下所示
+        // function Child4(name){
+        //     Super.apply(this,arguments);
+        //     this.test=44;
+        // }
+        // Child4.prototype=Super.prototype;//改进父类构造函数调用两次问题
+        // Child4.prototype.constructor=Child4;
+        // // Object.defineProperty(Child4.prototype,'constructor',{
+        // //     enumerable:false
+        // // });
+        // var child1=new Child4('bob');
+        // var child2=new Child4('bob2');
+        // console.log(child1.__proto__===Child4.prototype);               
+        // console.log(child1.__proto__.constructor,'\n',Child4.prototype.constructor); 
+        //  for(var itm in Child4.prototype){
+        //     console.log(itm);
+        // }  
+
+
+        // 或者使用Object.create()创建一个过渡对象--这个稍稍麻烦一点
+        // function Child5(name){
+        //     Super.apply(this,arguments);
+        //     this.test=55;
+        // }
+       
+        // Child5.prototype=Object.create(Super.prototype);
+        // Child5.prototype.constructor=Child5;
+        // Object.defineProperty(Child5.prototype,'constructor',{//Child5的原型是一个实例对象，所以显示的定义constructor会改变其不可枚举的特性，这里修正一下
+        //     enumerable:false
+        // });        
+        //  var child=new Child5('end');
+        // console.log(Child5.prototype.constructor,Super.prototype.constructor);
+        // console.log(child instanceof Child5,child instanceof Super);
+        // console.log(child.constructor,Child5.prototype.isPrototypeOf(child),Super.prototype.isPrototypeOf(child));         
+        //  for(var itm in Child5.prototype){
+        //     console.log(itm);
+        // } 
+
+        // 5.组合寄生继承模式---其实这种模式跟上面的第4-2的实现没有大的区别，不过上边的中间对象是Object.create()创建的，这里自己创建
+        function inheritProperty(sup,child){
+            function F(){};
+            F.prototype=sup.prototype;
+            var inner=new F();
+            inner.constructor=child;
+            child.prototype=inner; 
+            Object.defineProperty(child.prototype,'constructor',{
+            enumerable:false
+        });
+        }
+        function Child6(name){
+            this.age=66;
+            this.name=name;
+        }
+        inheritProperty(Super,Child6);
+        Child6.prototype.sayAge=function(){
+            return this.age;
+        }
+        var child=new Child6('end');
+        console.log(child.constructor);
+        console.log(Child6.prototype.constructor);
+        console.log(child.sayAge());
+               
+    </script>
+</body>
+</html>
