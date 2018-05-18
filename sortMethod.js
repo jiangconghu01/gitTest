@@ -2,7 +2,7 @@ let arr = [1, 23, 35, 2, 3, 4, 5, 46, 5, 7, 6, 8, 7, 6, 7, 8, 93, 25, 4, 8, 7, 2
 
 // let arr=(function(){
 //     let arr=[];
-//     for(let i=0;i<20000;i++){
+//     for(let i=0;i<50000;i++){
 //         arr[i]=Math.floor(Math.random()*50000);
 //     }
 //     return arr;
@@ -22,7 +22,7 @@ function pop(arr) {
 let arr1=Array.from(arr);
 //console.log(pop(arr1).toString())
 console.time('pop')
-let p=pop(arr1);
+//let p=pop(arr1);
 console.timeEnd('pop');
 //2.选择排序--思路找到最小值放在第一个位置，找到第二小的放在第二个位置......
 
@@ -44,7 +44,7 @@ function select(arr){
 let arr2=Array.from(arr);
 //console.log(select(arr2).toString())
 console.time('select');
-select(arr2);
+//select(arr2);
 console.timeEnd('select');
 
 //3.插入排序--假设第一个位置已经排好，第二个与第一个比较，该插入到它前边还是后边，假设第二项也排好了，第三项改插入第一二项的前后还是中间......以此类推
@@ -94,17 +94,19 @@ console.timeEnd('insert');
 
 // console.log(insert2(arr).toString())
 //insert2(arr)
-//shell排序，又称希尔排序，是对插入排序的优化
+//shell排序，又称希尔排序，是对插入排序进阶版
 //插入排序的缺点是每次移动一个，如上边的（@）一行的代码，元素一个一个向后移动;希尔排序的思想就是一次移动很多步，移动的步距不同效率也不同
 //对于步距的计算没有统一的规定
 
+//按照步距
+//整个数组跑i-1遍，每次按照步距比较交换位置，全部跑完自然排序排好
 function shell(arr){
 
     let length=arr.length;
     let temp=0;
     let h=1;
     while(h<length/3){
-        h=3*h+1;
+        h=3*h+1;//设置为3h+1是因为下面的Math.floor(h/3)是取3来缩小步距的，保证最后一次步距是1所以设置3n+1----具体可以看《搜索十大排序算法动图演示》
     }
     for(h;h>0;h=Math.floor(h/3)){
         for(let i=h;i<length;i++){
@@ -167,7 +169,7 @@ function quickSort(arr){
                 quick(arr,pos,right);
             }
         }
-
+        return arr;
     }
     function getPos(arr,left,right){
         let midle=arr[Math.floor((left+right)/2)],//中间参照物
@@ -181,13 +183,15 @@ function quickSort(arr){
                 j--;
             }
             if(i<=j){            //内部两个while改变了i,j的值，我们需要再次判断指针否已经交叉
-                [arr[i],arr[j]]=[arr[j],arr[i]];  //交换值
+                [arr[i],arr[j]]=[arr[j],arr[i]];  //交换值{x:a,y:b}={x:b,y:a}这样也可以交换ab的值
+                i++;
+                j--;
             }
         }
         return i;
     }
-    quick(arr,left,right);
-    return arr;
+    
+    return quick(arr,left,right);
 }
 
 let arr7=Array.from(arr);
@@ -195,4 +199,59 @@ let arr7=Array.from(arr);
 console.time('quick3')
 let copy3=quickSort(arr7);
 console.timeEnd('quick3');
-console.log(copy3.toString());
+//console.log(copy3.toString());
+function qSort(arr){
+    let len=arr.length,
+    posIndex=0,
+    left=0,
+    right=arr.length-1;
+
+    function quick(arr,,left,right){
+        if(left<right){
+            posIndex=getIndex(arr,left,right);
+            quick(arr,left,posIndex-1);
+            quick(arr,posIndex+1,right);
+        }
+        return arr;
+    }
+    function getIndex(arr,left,right){
+        let mid=arr[left];//选取一个参考值，这里选取开头的值
+        let index=mid+1;
+        for(let i=index;i<right;i++){
+            if(arr[i]<arr[mid]){
+
+            }
+        }
+
+    }
+    return quick(arr,left,right);
+}
+
+
+let fibonacci = function() {
+  // 缓存过程中计算结果
+  let cache = {};
+  return function(n) {
+    // 没有被计算过
+    if (!cache[n]){
+      cache[n] = n < 2 ? n : fibonacci(n - 2) + fibonacci(n - 1);
+    }
+
+    return cache[n];
+  }
+}();
+console.log(fibonacci(10));
+let fib=function(n){
+    if(n<=2){
+        return 1;//fib(1)=1;fib(2)=1
+    }
+    let array=[];
+    array[0]=1;
+    array[1]=1;
+    for(let i=2;i<n;i++){
+        array[i]=array[i-1]+array[i-2];
+    }
+    return array;
+}
+
+
