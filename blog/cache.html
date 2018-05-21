@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+
+    // 缓存的HTTP控制字段：
+    // （HTTP1.0）
+    // Expires:5 Jul 2018 16:00:00 GMT
+    // 在设置的时间内直接从浏览器中取值---200 OK (from memory cache)
+    // Cache-control:（HTTP1.1）
+    // max-age:从请求开始到设置的这段时间内直接从浏览器读取信息，客户端不会再向服务器发起请求，返回200 OK (from memory cache)，从浏览器中取资源，优先级高于Expires
+    // s-maxage:只能设置pulic的缓存设备（比如代理，CDN，用户自己的浏览器缓存属于private的缓存）；设置的时间不过期，如CDN是不会去服务器更新同步文件的，浏览器请求后CDN返回304，直接把资源给客户端
+    // private:
+    // public:
+    // no-cache:客户端不会直接从浏览器中取资源（max-age和expires只要在设定时间内，直接从浏览器中取值，返回200）
+    // no-store:客户端不会复制对象，对已复制对象删除，不缓存
+
+    // max-age和Expires强制从浏览器中读取文件，导致服务端如果文件发生变化客户端无法感知到的，那可以利用
+    // last-modified ---responseHeader  告诉浏览器文件的最后文件编辑时间
+    // If-Modified-Since: --- requestHeader 客户端发送该字段告诉服务端，它自己缓存文件是什么时候编辑的，如果命中返回304 Not Modified,未命中就返回200 告诉浏览器缓存的文件不能用，替换新的
+
+    // 用last-modified：
+    // 1）有些文档可能会被周期性地重写（比如， 从一个后台进程中写入）， 但实际包含
+    // 的数据常常是一样的。 尽管内容没有变化， 但修改日期会发生变化。
+    // 2）有些文档可能被修改了， 但所做修改并不重要， 不需要让世界范围内的缓存都重
+    // 装数据（比如对拼写或注释的修改）。
+    // 3）有些服务器无法准确地判定其页面的最后修改日期。
+    // 4）有些服务器提供的文档会在亚秒间隙发生变化（比如， 实时监视器）， 对这些服
+    // 务器来说， 以一秒为粒度的修改日期可能就不够用了。
+    // ETag: ---responseHeader 优先级高于last-modified 如：（ETag:W/"3794-1526888447052"，具体参考HTTP权威指南）/w标识弱验证器
+    // If-None-Match: ---requestHeader 
+
+    
+    </script>
+</body>
+</html>
