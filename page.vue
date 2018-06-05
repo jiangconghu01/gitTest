@@ -7,7 +7,7 @@
     </div>
     <div :class="$style.uShowlist">
       <div :class="$style.uslp" v-show="openSizeBox">
-        <div v-for="size in newSizeArray" @click="setPageSize(size)">{{size}}</div>
+        <div v-for="(size, index) in newSizeArray" :key="index" @click="setPageSize(size)">{{size}}</div>
       </div>
       <span :class="$style.v">{{pageSize}}</span>
       <span :class="$style.trigger" @click="openSizePage()"></span>
@@ -15,7 +15,7 @@
     <div :class="$style.ctrls">
       <div :class="$style.prev" @click="prePage()"></div>
       <div :class="$style.ctrl">
-          <span :class="[pageIndex === page ? $style.selected : '',page != '…' ? $style.uPage : $style.uPage]" v-for="(page, index) in groupList" @click="setCurrent(page,index)">{{page}}</span>
+          <span :class="[pageIndex === page ? $style.selected : '',page != '…' ? $style.uPage : $style.uPage]" v-for="(page, index) in groupList" :key="index" @click="setCurrent(page,index)">{{page}}</span>
       </div>
       <div :class="$style.next" @click="nextPage()"></div>
     </div>
@@ -29,25 +29,25 @@
 </div>
 </template>
 <script>
-import { TypeDetector } from '@/util/helper';
+import { TypeDetector } from '@/util/helper'
 
 export default {
   name: 'Page',
   props: {
     value: {
-      validator(val) {
-        val = TypeDetector.is(val, 'Object') ? val : {};
-        val.total = TypeDetector.is(val.total, 'Number') && val.total >= 0 ? val.total : 0;
-        val.pageSize = TypeDetector.is(val.pageSize, 'Number') && val.pageSize >= 1 ? val.pageSize : 10;
-        val.pageIndex = TypeDetector.is(val.pageIndex, 'Number') && val.pageIndex >= 1 ? val.pageIndex : 1;
-        val.sizeScales = TypeDetector.is(val.sizeScales, 'Array') ? val.sizeScales : [10, 20, 50, 100];
-        val.midNumber = TypeDetector.is(val.midNumber, 'Number') ? val.midNumber : 4;
-        return val;
+      validator (val) {
+        val = TypeDetector.is(val, 'Object') ? val : {}
+        val.total = TypeDetector.is(val.total, 'Number') && val.total >= 0 ? val.total : 0
+        val.pageSize = TypeDetector.is(val.pageSize, 'Number') && val.pageSize >= 1 ? val.pageSize : 10
+        val.pageIndex = TypeDetector.is(val.pageIndex, 'Number') && val.pageIndex >= 1 ? val.pageIndex : 1
+        val.sizeScales = TypeDetector.is(val.sizeScales, 'Array') ? val.sizeScales : [10, 20, 50, 100]
+        val.midNumber = TypeDetector.is(val.midNumber, 'Number') ? val.midNumber : 4
+        return val
       }
     },
     pageCallBack: Function
   },
-  data() {
+  data () {
     return {
       total: this.value.total,
       pageSize: this.value.pageSize,
@@ -55,141 +55,141 @@ export default {
       pageIndex: this.value.pageIndex,
       crtMidNumber: this.value.midNumber,
       openSizeBox: false,
-      pageInput: 1,
-    };
+      pageInput: 1
+    }
   },
   computed: {
-    newSizeArray() {
-      return this.sizeScales;
+    newSizeArray () {
+      return this.sizeScales
     },
-    totalPage() {
-      return Math.ceil(this.total / this.pageSize);
+    totalPage () {
+      return Math.ceil(this.total / this.pageSize)
     },
-    groupList() {
-      let allLen = this.crtMidNumber + 4;
-      let baseNum = 2;
+    groupList () {
+      let allLen = this.crtMidNumber + 4
+      let baseNum = 2
       if (this.totalPage <= allLen) {
-        let numArray = new Array(this.totalPage);
+        let numArray = new Array(this.totalPage)
         for (let i = 0; i < numArray.length; i++) {
-          numArray[i] = i + 1;
+          numArray[i] = i + 1
         }
-        return numArray;
+        return numArray
       }
-      let tempArray = new Array(allLen);
-      let bakArray = new Array(this.totalPage - 3);
-      let preNode = 4;
-      let aftNode = this.totalPage - 3;
-      bakArray.fill(0);
-      Array.from(bakArray, x => (baseNum += 1 + x));
+      let tempArray = new Array(allLen)
+      let bakArray = new Array(this.totalPage - 3)
+      let preNode = 4
+      let aftNode = this.totalPage - 3
+      bakArray.fill(0)
+      Array.from(bakArray, x => (baseNum += 1 + x))
       if (this.pageIndex < preNode) {
         for (let i = 0; i < tempArray.length; i++) {
           if (i === tempArray.length - 2) {
-            tempArray[i] = '…';
+            tempArray[i] = '…'
           } else if (i === tempArray.length - 1) {
-            tempArray[i] = this.totalPage;
+            tempArray[i] = this.totalPage
           } else {
-            tempArray[i] = i + 1;
+            tempArray[i] = i + 1
           }
         }
       }
       if (this.pageIndex > aftNode) {
         for (let i = 0; i < tempArray.length; i++) {
           if (i === 0) {
-            tempArray[i] = 1;
+            tempArray[i] = 1
           } else if (i === 1) {
-            tempArray[i] = '…';
+            tempArray[i] = '…'
           } else {
-            tempArray[i] = this.totalPage - (tempArray.length - i - 1);
+            tempArray[i] = this.totalPage - (tempArray.length - i - 1)
           }
         }
       }
       if (preNode <= this.pageIndex && this.pageIndex <= aftNode) {
-        tempArray[0] = 1;
-        tempArray[1] = tempArray[tempArray.length - 2] = '…';
-        tempArray[tempArray.length - 1] = this.totalPage;
-        let startNum = aftNode - this.pageIndex + 2 < this.crtMidNumber ? (this.totalPage - this.crtMidNumber) : this.pageIndex;
+        tempArray[0] = 1
+        tempArray[1] = tempArray[tempArray.length - 2] = '…'
+        tempArray[tempArray.length - 1] = this.totalPage
+        let startNum = aftNode - this.pageIndex + 2 < this.crtMidNumber ? (this.totalPage - this.crtMidNumber) : this.pageIndex
         for (let i = 2; i < tempArray.length - 2; i++) {
-          tempArray[i] = startNum + i - 3;
+          tempArray[i] = startNum + i - 3
         }
       }
-      return tempArray;
+      return tempArray
     }
   },
   methods: {
-    setCurrent(page, index) {
-      let goPage = page;
-      let array = this.groupList;
-      let total = this.totalPage;
+    setCurrent (page, index) {
+      let goPage = page
+      let array = this.groupList
+      let total = this.totalPage
       if (page === '…') {
-        goPage = index === 1 ? Math.ceil((array[index + 1] + 1) / 2) : Math.ceil((array[index - 1] + total) / 2);
+        goPage = index === 1 ? Math.ceil((array[index + 1] + 1) / 2) : Math.ceil((array[index - 1] + total) / 2)
       }
-      this.pageIndex = goPage;
+      this.pageIndex = goPage
     },
-    openSizePage() {
-      this.openSizeBox = !this.openSizeBox;
+    openSizePage () {
+      this.openSizeBox = !this.openSizeBox
     },
-    setPageSize(size) {
-      this.pageSize = size;
-      this.openSizeBox = false;
+    setPageSize (size) {
+      this.pageSize = size
+      this.openSizeBox = false
       if (this.pageIndex > this.totalPage) {
-        this.pageIndex = 1;
+        this.pageIndex = 1
       }
     },
-    prePage() {
+    prePage () {
       if (this.pageIndex === 1) {
-        return;
+        return
       }
-      this.pageIndex -= 1;
+      this.pageIndex -= 1
     },
-    nextPage() {
+    nextPage () {
       if (this.pageIndex === this.totalPage) {
-        return;
+        return
       }
-      this.pageIndex += 1;
+      this.pageIndex += 1
     },
-    goPage() {
-      let index = Number.parseInt(this.pageInput);
+    goPage () {
+      let index = Number.parseInt(this.pageInput)
       if (!index) {
-        return;
+        return
       }
-      index = index > this.totalPage ? this.totalPage : index;
-      this.pageIndex = index;
+      index = index > this.totalPage ? this.totalPage : index
+      this.pageIndex = index
     },
-    getValue() {
+    getValue () {
       return {
         total: this.total,
         pageIndex: this.pageIndex,
         pageSize: this.pageSize,
         sizeScales: this.sizeScales,
         midNumber: this.midNumber
-      };
+      }
     },
-    setValue() {
-      this.total = this.value.total;
-      this.pageIndex = this.value.pageIndex;
-      this.crtPageSiz = this.value.pageSize;
-      this.sizeScales = this.value.sizeScales;
-      this.midNumber = this.value.midNumber;
+    setValue () {
+      this.total = this.value.total
+      this.pageIndex = this.value.pageIndex
+      this.crtPageSiz = this.value.pageSize
+      this.sizeScales = this.value.sizeScales
+      this.midNumber = this.value.midNumber
     }
   },
-  created() {
-    this.$emit('input', this.getValue());
-    this.pageCallBack && this.pageCallBack(this.pageIndex, this.pageSize);
+  created () {
+    this.$emit('input', this.getValue())
+    this.pageCallBack && this.pageCallBack(this.pageIndex, this.pageSize)
   },
   watch: {
-    value() {
-      this.setValue();
+    value () {
+      this.setValue()
     },
-    pageIndex() {
-      this.$emit('input', this.getValue());
-      this.pageCallBack && this.pageCallBack(this.pageIndex, this.pageSize);
+    pageIndex () {
+      this.$emit('input', this.getValue())
+      this.pageCallBack && this.pageCallBack(this.pageIndex, this.pageSize)
     },
-    pageSize() {
-      this.$emit('input', this.getValue());
-      this.pageCallBack && this.pageCallBack(this.pageIndex, this.pageSize);
+    pageSize () {
+      this.$emit('input', this.getValue())
+      this.pageCallBack && this.pageCallBack(this.pageIndex, this.pageSize)
     }
   }
-};
+}
 </script>
 <style lang="scss" module>
 .paging {
